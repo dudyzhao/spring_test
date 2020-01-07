@@ -1,3 +1,5 @@
+import javax.tools.JavaCompiler
+
 plugins {
     id 'org.springframework.boot' version '2.2.2.RELEASE'
     id 'io.spring.dependency-management' version '1.0.8.RELEASE'
@@ -16,18 +18,43 @@ configurations {
         extendsFrom annotationProcessor
     }
 }
+// 配置全局变量
+allprojects {
+    /**
+     * 指定所使用的仓库，mavenCentral()表示使用中央仓库，
+     * 此刻项目中所需要的jar包都会默认从中央仓库下载到本地指定目录
+     * 配置mavenLocal()表示引入jar包的时候，先从本地仓库中找，没有再去中央仓库下载
+     * maven{ url ''} 指定私服地址或其他中央仓库
+     */
+    repositories {
+        mavenLocal()
+        maven { url 'http://localhost:8081/repository/maven-public/' }
+        mavenCentral()
+    }
 
-/**
- * 指定所使用的仓库，mavenCentral()表示使用中央仓库，
- * 此刻项目中所需要的jar包都会默认从中央仓库下载到本地指定目录
- * 配置mavenLocal()表示引入jar包的时候，先从本地仓库中找，没有再去中央仓库下载
- * maven{ url ''} 指定私服地址或其他中央仓库
- */
-repositories {
-    mavenLocal()
-    maven { url 'http://localhost:8081/repository/maven-public/' }
-    mavenCentral()
+    tasks.withType(JavaCompiler){
+        options.encoding = "UTF-8"
+        sourceCompatibility = JavaVersion.VERSION_1_8
+        targetCompatibility = JavaVersion.VERSION_1_8
+    }
+
+    test {
+        useJUnitPlatform()
+    }
+
+    /**
+     * 发布到maven仓库
+     */
+    uploadArchives {
+        repositories {
+            mavenDeployer {
+                repository(url: "http://localhost:8081/repository/maven-public/")
+            }
+        }
+    }
 }
+
+
 
 /**
  * gradle工程中所有的jar包的坐标都在dependencies属性内放置
@@ -45,18 +72,4 @@ dependencies {
     testCompile group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: '5.5.2'
     testCompile group: 'junit', name: 'junit', version: '4.12'
     providedCompile group: 'org.projectlombok', name: 'lombok', version: '1.18.8'
-}
-
-test {
-    useJUnitPlatform()
-}
-/**
- * 发布到maven仓库
- */
-uploadArchives {
-    repositories {
-        mavenDeployer {
-            repository(url: "http://localhost:8081/repository/maven-public/")
-        }
-    }
 }
