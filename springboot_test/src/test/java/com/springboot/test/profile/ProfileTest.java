@@ -18,8 +18,11 @@ public class ProfileTest {
 	@Autowired
 	private TestBean testBean;
 
+	/**
+	 * @todo 这个测试类有问题，暂留
+	 */
 	@Test
 	public void testProfile(){
-		System.out.println(testBean.getContent());
+		System.out.println(testBean);
 	}
 }

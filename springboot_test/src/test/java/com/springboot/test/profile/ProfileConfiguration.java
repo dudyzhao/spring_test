@@ -16,7 +16,7 @@ import org.springframework.context.annotation.Profile;
 public class ProfileConfiguration {
 	@Bean
 	@Profile("dev")
-	public TestBean devBean() {
+	public TestBean testBean() {
 		return new TestBean("dev");
 	}
 	@Bean

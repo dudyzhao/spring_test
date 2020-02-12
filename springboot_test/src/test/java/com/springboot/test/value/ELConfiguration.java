@@ -19,7 +19,7 @@ import java.io.IOException;
  **/
 @Configuration
 @Component
-@PropertySource("/value.properties")
+@PropertySource("classpath:value.properties")
 public class ELConfiguration {
 
 	@Value("I love you")
